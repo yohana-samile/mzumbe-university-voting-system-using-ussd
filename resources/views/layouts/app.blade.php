@@ -36,7 +36,7 @@
             <ul class="navbar-nav bg-gradient sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: #002E3B">
 
                 <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('home') }}">
                     <div class="sidebar-brand-icon">
                         <h4><img src="{{ asset('/img/graduation-cap-svgrepo-com (1).svg') }}" alt="logo" style="width: 30px;"></h4>
                     </div>
@@ -50,9 +50,9 @@
 
                 <!-- Nav Item - Dashboard -->
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'home' %}">
+                    <a class="nav-link" href="{{ url('home') }}">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span></a>
+                        <span>{{__('Dashboard')}}</span></a>
                 </li>
 
                 <div class="mb-2"></div>
@@ -60,27 +60,28 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('position') }}">
                         <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Position</span>
+                        <span>{{__('Position')}}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('voting_window') }}">
                         <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Voting Window</span>
+                        <span>{{__('Voting Window')}}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseResult"
                         aria-expanded="true" aria-controls="collapseResult">
                         <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Voting Result</span>
+                        <span>{{__('Voting Result')}}</span>
                     </a>
                     <div id="collapseResult" class="collapse" aria-labelledby="headingResult"
                         data-parent="#accordionSidebar">
                         <div class="collapse-inner rounded" style="background-color: #e9eff1;">
                             @foreach ($postions as $postion)
-                                <a class="collapse-item text-dark" href="{{ url('voting_result_for',['name' => $postion->name ]) }}">{{ $postion->name }}</a>
+                                <a class="collapse-item text-dark" href="{{ url('result/voting_result_for',['name' => $postion->name ]) }}">{{ $postion->name }}</a>
                             @endforeach
+                                <a class="collapse-item text-dark" href="{{ url('over_all_result') }}">{{__('over all result')}}</a>
                         </div>
                     </div>
                 </li>
@@ -88,7 +89,7 @@
                 <div class="mb-4"></div>
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    OTHER APPS
+                    {{__('OTHER APPS')}}
                 </div>
 
                 <!-- USERS -->
@@ -96,14 +97,14 @@
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers"
                         aria-expanded="true" aria-controls="collapseUsers">
                         <i class="fas fa-fw fa-user"></i>
-                        <span>User Records</span>
+                        <span>{{__('User Records')}}</span>
                     </a>
                     <div id="collapseUsers" class="collapse" aria-labelledby="headingUtilities"
                         data-parent="#accordionSidebar">
                         <div class="collapse-inner rounded" style="background-color: #e9eff1;">
-                            <a class="collapse-item text-dark" href="{{ url('voter') }}">Voter</a>
-                            <a class="collapse-item text-dark" href="{{ url('candidate') }}">Candidate</a>
-                            <a class="collapse-item text-dark" href="{{ url('election_manager') }}">Election Manager</a>
+                            <a class="collapse-item text-dark" href="{{ url('voter') }}">{{__('Voter')}}</a>
+                            <a class="collapse-item text-dark" href="{{ url('candidate') }}">{{__('Candidate')}}</a>
+                            <a class="collapse-item text-dark" href="{{ url('election_manager') }}">{{__('Election Manager')}}</a>
                         </div>
                     </div>
                 </li>
@@ -112,13 +113,13 @@
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUnits"
                         aria-expanded="true" aria-controls="collapseUnits">
                         <i class="fas fa-fw fa-book-open"></i>
-                        <span>MU Units</span>
+                        <span>{{__('MU Units')}}</span>
                     </a>
                     <div id="collapseUnits" class="collapse" aria-labelledby="headingUtilities"
                         data-parent="#accordionSidebar">
                         <div class="collapse-inner rounded" style="background-color: #e9eff1;">
-                            <a class="collapse-item text-dark" href="{{ url('unit/') }}">Unit</a>
-                            <a class="collapse-item text-dark" href="{{ url('programme/') }}">Programmes</a>
+                            <a class="collapse-item text-dark" href="{{ url('unit/') }}">{{__('Unit')}}</a>
+                            <a class="collapse-item text-dark" href="{{ url('programme/') }}">{{__('Programmes')}}</a>
                         </div>
                     </div>
                 </li>
@@ -172,7 +173,7 @@
                                     </div>
                                     <a class="dropdown-item" href="{% url 'profile' %}">
                                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Profile
+                                        {{__('Profile')}}
                                     </a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
@@ -201,10 +202,10 @@
                         <div class="copyright text-center my-auto">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <span> <a href="https://site.mzumbe.ac.tz" target="_blank" style="color: #f36140; font-weight: 700;">Mzumbe University Online Voting System</a> &copy; 2023</span>
+                                    <span> <a href="https://site.mzumbe.ac.tz" target="_blank" style="color: #f36140; font-weight: 700;">{{__('Mzumbe University Online Voting System')}}</a> &copy; {{__('2023')}}</span>
                                 </div>
                                 <div class="col-md-6">
-                                    <span> <a href="https://github.com/yohana-samile/" target="_blank" style="color: black">Developed By <span style="color:  #f36140;font-weight: 700;"> BAE</span></a></span>
+                                    <span> <a href="https://github.com/yohana-samile/" target="_blank" style="color: black">{{__('Developed By ')}}<span style="color:  #f36140;font-weight: 700;"> {{__('BAE')}}</span></a></span>
                                 </div>
                             </div>
                         </div>

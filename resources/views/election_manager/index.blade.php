@@ -36,8 +36,8 @@
                                 <th>S/N</th>
                                 <th>Name</th>
                                 <th>regstration_number</th>
-                                <th>programme_abbreviation</th>
-                                <th>unit_abbreviation</th>
+                                <th>programme abbreviation</th>
+                                <th>unit abbreviation</th>
                                 <th>is election Manager</th>
                                 <th>Action</th>
                             </tr>
@@ -47,45 +47,46 @@
                                 <th>S/N</th>
                                 <th>Name</th>
                                 <th>regstration_number</th>
-                                <th>programme_abbreviation</th>
-                                <th>unit_abbreviation</th>
+                                <th>programme abbreviation</th>
+                                <th>unit abbreviation</th>
                                 <th>is election Manager</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @php
-                                    $sn = 1;
-                                    @endphp
-                                @foreach ($voters as $voter)
-                                <tr>
-                                    <td>{{ $sn++ }}</td>
-                                    <td>{{ $voter->voter_name }}</td>
-                                    <td>{{ $voter->regstration_number }}</td>
-                                    <td>{{ $voter->programme_abbreviation }}</td>
-                                    <td>{{ $voter->unit_abbreviation }}</td>
-                                    <td>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <a href="{{ url('voter/view_voter', ['id' => $voter->id ])}}">
-                                                    <i class="fa fa-eye text-primary"></i>
-                                                </a>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <a href="{{ url('voter/edit_voter', ['id' => $voter->id ])}}">
-                                                    <i class="fa fa-edit text-primary"></i>
-                                                </a>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <form action="{{ route('destroy_voter', ['id' => $voter->id ]) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-white"><i class="fa fa-trash text-danger"></i></button>
-                                                </form>
-                                            </div>
+                                $sn = 1;
+                                @endphp
+                            @foreach ($managers as $manager)
+                            <tr>
+                                <td>{{ $sn++ }}</td>
+                                <td>{{ $manager->manager_name }}</td>
+                                <td>{{ $manager->regstration_number }}</td>
+                                <td>{{ $manager->programme_abbreviation }}</td>
+                                <td>{{ $manager->unit_abbreviation }}</td>
+                                <td class=" text-center"><i class="fa fa-check text-primary"></i></td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a href="{{ url('election_manager/view_election_manager', ['id' => $manager->id ])}}">
+                                                <i class="fa fa-eye text-primary"></i>
+                                            </a>
                                         </div>
-                                    </td>
-                                </tr>
-                                @endforeach
+                                        <div class="col-md-4">
+                                            <a href="{{ url('election_manager/edit_election_manager', ['id' => $manager->id ])}}">
+                                                <i class="fa fa-edit text-primary"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <form action="{{ route('destroy_election_manager', ['id' => $manager->id ]) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-white"><i class="fa fa-trash text-danger"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

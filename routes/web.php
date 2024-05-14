@@ -6,6 +6,8 @@
     use App\Http\Controllers\VoterController;
     use App\Http\Controllers\CandidateController;
     use App\Http\Controllers\VotingWindowController;
+    use App\Http\Controllers\ElectionManagerController;
+    use App\Http\Controllers\ElectionResultController;
     /*
     |--------------------------------------------------------------------------
     | Web Routes
@@ -89,4 +91,23 @@
         Route::post('update_voting_window', 'update_voting_window')->name('update_voting_window');
         Route::post('end_voting_process/{id}', 'end_voting_process')->name('end_voting_process');
         Route::post('destroy_voting_window/{id}', 'destroy_voting_window')->name('destroy_voting_window');
+    })->middleware('auth');
+
+    // election_manager
+    Route::controller(ElectionManagerController::class)->group(function () {
+        Route::get('election_manager/', 'index');
+        Route::get('election_manager/add_election_manager', 'add_election_manager');
+        Route::post('store', 'store')->name('store');
+
+        Route::get('election_manager/view_election_manager/{id}', 'view_election_manager')->name('election_manager/view_election_manager');
+
+        Route::get('election_manager/edit_election_manager/{id}', 'edit_election_manager')->name('election_manager/edit_election_manager');
+        Route::post('update_election_manager', 'update_election_manager')->name('update_election_manager');
+
+        Route::post('destroy_election_manager/{id}', 'destroy_election_manager')->name('destroy_election_manager');
+    })->middleware('auth');
+
+    // result for ection
+    Route::controller(ElectionResultController::class)->group(function () {
+        Route::get('result/voting_result_for/{name}', 'voting_result_for')->name('result/voting_result_for');
     })->middleware('auth');
