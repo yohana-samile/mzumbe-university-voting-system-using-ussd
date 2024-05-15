@@ -22,7 +22,7 @@
                         </ul>
                     </div>
                 @endif
-                <form action="{{ route('store') }}" method="POST">
+                <form action="{{ route('store_voting_window') }}" method="POST">
                     @csrf
                     <div class="form-group">
                         <input type="time" name="time_from" id="time_from" class="form-control" required>

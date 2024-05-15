@@ -79,9 +79,9 @@
                         data-parent="#accordionSidebar">
                         <div class="collapse-inner rounded" style="background-color: #e9eff1;">
                             @foreach ($postions as $postion)
-                                <a class="collapse-item text-dark" href="{{ url('result/voting_result_for',['name' => $postion->name ]) }}">{{ $postion->name }}</a>
+                                <a class="collapse-item text-dark" href="{{ url('result/voting_result_for', ['id' => $postion->id ]) }}">{{ $postion->name }}</a>
                             @endforeach
-                                <a class="collapse-item text-dark" href="{{ url('over_all_result') }}">{{__('over all result')}}</a>
+                                <a class="collapse-item text-dark" href="{{ url('result') }}">{{__('over all result')}}</a>
                         </div>
                     </div>
                 </li>

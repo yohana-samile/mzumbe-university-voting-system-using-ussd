@@ -74,7 +74,7 @@
     Route::controller(CandidateController::class)->group(function () {
         Route::get('candidate/', 'index');
         Route::get('candidate/add_candidate', 'add_candidate');
-        Route::post('store', 'store')->name('store');
+        Route::post('store_candidate', 'store_candidate')->name('store_candidate');
         Route::get('candidate/view_candidate/{id}', 'view_candidate')->name('candidate/view_candidate');
         Route::get('candidate/edit_candidate/{id}', 'edit_candidate')->name('candidate/edit_candidate');
         Route::post('update_candidate', 'update_candidate')->name('update_candidate');
@@ -85,7 +85,7 @@
     Route::controller(VotingWindowController::class)->group(function () {
         Route::get('voting_window/', 'index');
         Route::get('voting_window/add_voting_window', 'add_voting_window');
-        Route::post('store', 'store')->name('store');
+        Route::post('store_voting_window', 'store_voting_window')->name('store_voting_window');
         Route::get('voting_window/view_voting_window/{id}', 'view_voting_window')->name('voting_window/view_voting_window');
         Route::get('voting_window/edit_voting_window/{id}', 'edit_voting_window')->name('voting_window/edit_voting_window');
         Route::post('update_voting_window', 'update_voting_window')->name('update_voting_window');
@@ -109,5 +109,7 @@
 
     // result for ection
     Route::controller(ElectionResultController::class)->group(function () {
-        Route::get('result/voting_result_for/{name}', 'voting_result_for')->name('result/voting_result_for');
+        Route::get('result/', 'index');
+        Route::get('result/voting_result_for/{id}', 'voting_result_for')->name('result.voting_result_for');
+        Route::post('publish_voting_result', 'publish_voting_result')->name('publish_voting_result');
     })->middleware('auth');

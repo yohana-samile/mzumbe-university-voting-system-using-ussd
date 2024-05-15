@@ -22,7 +22,7 @@
                         </ul>
                     </div>
                 @endif
-                <form action="{{ route('store') }}" method="POST">
+                <form action="{{ route('store_candidate') }}" method="POST">
                     @csrf
                     <div class="form-group">
                         <select name="name" id="name" class="form-control" required>

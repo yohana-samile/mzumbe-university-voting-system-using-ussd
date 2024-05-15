@@ -33,7 +33,7 @@
             ]));
         }
 
-        public function store(Request $request){
+        public function store_candidate(Request $request){
             $candidate = Candidate::create($request->all());
             if ($candidate) {
                 return redirect()->back()->with('success', 'New candidate Added Successfuly');

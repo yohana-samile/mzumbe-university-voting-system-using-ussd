@@ -22,7 +22,7 @@
             return view('voting_window/add_voting_window');
         }
 
-        public function store(Request $request){
+        public function store_voting_window(Request $request){
             $voting_window = VotingWindow::create($request->all());
             if ($voting_window) {
                 return redirect()->back()->with('success', 'New voting_window Added Successfuly');
