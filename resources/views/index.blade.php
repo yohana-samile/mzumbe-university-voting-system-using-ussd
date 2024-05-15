@@ -1,69 +1,47 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ ('MUOVS') }}</title>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
-    <style>
-        .btn, .bg{
-            background-color: #fd876d;
-        }
-        #btn{
-            background-color: #fd876d;
-        }
-    </style>
-</head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ ('MU-Online Voting System') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-
-                        <li class="nav-item">
-                            <u class="text-primary"><a class="nav-link" href="{{ url('/') }}">{{ __('Over All Result') }}</a></u>
-                        </li>
-                        <li class="nav-item">
-                            <u class="text-primary"><a class="nav-link" href="{{ route('login') }}">{{ __('President Result') }}</a></u>
-                        </li>
-                        <li class="nav-item">
-                            <u class="text-primary"><a class="nav-link" href="{{ route('login') }}">{{ __('Senator Result') }}</a></u>
-                        </li>
-                        <li class="nav-item">
-                            <u class="text-primary"><a class="nav-link" href="{{ route('login') }}">{{ __('FRs Result') }}</a></u>
-                        </li>
-                        <li class="nav-item">
-                            <u class="text-primary"><a class="nav-link" href="{{ route('login') }}">{{ __('Voters') }}</a></u>
-                        </li>
-                        <li class="nav-item">
-                           <a class="nav-link btn btn-danger text-white" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                    </ul>
+@include('includes.header')
+    @php
+        use Illuminate\Support\Facades\DB;
+        use App\Models\User;
+        $voters = User::get();
+        $results = DB::select("SELECT candidates.name as candidate_name, candidates.id, candidates.wining_status, candidates.total_votes, positions.name AS position_name FROM candidates, positions WHERE candidates.position_id = positions.id ");
+    @endphp
+    <div class="container my-4 d-flext justify-content-center">
+        <div class="row">
+            @foreach ($results as $index => $result)
+                <div class="col-md-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <p>Position: {{ $result->position_name }}</p>
+                        </div>
+                        <div class="card-body">
+                            <p>Candidate: {{ $result->candidate_name }}</p>
+                            @if ($result->total_votes == null)
+                                <div class="my-4 text-center">Total Votes <span class="alert alert-success">0</span></div>
+                            @else
+                                <div class="my-4 text-center">Total Votes <span class="alert alert-success">{{ $result->total_votes }}</span></div>
+                            @endif
+                            @if ($result->wining_status == 1 )
+                                Wining Status: <p class="badge badge-success text-center my-4">Winner <i class="fa fa-check"></i></p>
+                            @else
+                                Wining Status: <p class="badge badge-danger my-4">Looser</p>
+                            @endif
+                        </div>
+                    </div>
+                    <br>
                 </div>
-            </div>
-        </nav>
+                @if (($index + 1) % 2 == 0 && !$loop->last)
+                @if (($index + 1) % 2 == 0 && !$loop->last)
+                    <div class="col-md-2" hidden>
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="text-center">VS</h4>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div><div class="row">
+                @endif
+            @endforeach
+        </div>
+    </div>
+@include('includes.footer')

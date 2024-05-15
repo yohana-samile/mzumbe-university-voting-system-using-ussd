@@ -5,6 +5,7 @@
     use App\Models\Position;
     use App\Models\Candidate;
     use App\Models\VotingWindow;
+    use App\Models\User;
 
     class ElectionResultController extends Controller
     {
@@ -45,5 +46,15 @@
             else{
                 return redirect()->back()->withErrors('error', 'Fail Try Again!');
             }
+        }
+
+        // outside
+        public function voters(){
+            $voters = DB::select("SELECT users.id, users.name as voter_name, users.regstration_number, programmes.programme_abbreviation, units.unit_abbreviation FROM
+                users, programmes, units WHERE
+                users.programme_id = programmes.id AND
+                programmes.unit_id = units.id;
+            ");
+            return view('voters', compact('voters'));
         }
     }

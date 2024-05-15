@@ -16,7 +16,7 @@
             $voters = DB::select("SELECT users.id, users.name as voter_name, users.regstration_number, programmes.programme_abbreviation, units.unit_abbreviation FROM
                 users, programmes, units WHERE
                 users.programme_id = programmes.id AND
-                programmes.unit_id = units.id;
+                programmes.unit_id = units.id
             ");
             return view('voter/index', compact('voters'));
         }

@@ -22,15 +22,18 @@
     Route::get('/', function () {
         return view('index');
     });
+    Route::get('voters', [App\Http\Controllers\ElectionResultController::class, 'voters'])->name('voters');
+    Route::get('vote_demo', [App\Http\Controllers\VotingProcessController::class, 'vote_demo'])->name('vote_demo'); // manually demo
+    Route::post('submit_vote', [App\Http\Controllers\VotingProcessController::class, 'submit_vote'])->name('submit_vote'); //manually demo
+    Route::post('/ussd', 'USSDController@handle');
 
     Auth::routes();
-
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     // position
     Route::controller(PositionController::class)->group(function () {
         Route::get('position/', 'index');
         Route::get('position/add_position', 'add_position');
-        Route::post('store', 'store')->name('store');
+        Route::post('store_position', 'store_position')->name('store_position');
         Route::get('position/view_position/{id}', 'view_position')->name('position/view_position');
         Route::get('position/edit_position/{id}', 'edit_position')->name('position/edit_position');
         Route::post('update_position', 'update_position')->name('update_position');

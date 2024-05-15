@@ -14,7 +14,7 @@
             return view('position/add_position');
         }
 
-        public function store(Request $request){
+        public function store_position(Request $request){
             $store = Position::create($request->all());
             if ($store) {
                 return redirect()->back()->with('success', 'Your Position Added Successfuly');
