@@ -7,7 +7,7 @@
                                     <span> <a href="https://site.mzumbe.ac.tz" target="_blank" style="color: #f36140; font-weight: 700;">{{__('Mzumbe University Online Voting System')}}</a> &copy; {{__('2023')}}</span>
                                 </div>
                                 <div class="col-md-6">
-                                    <span> <a href="https://github.com/yohana-samile/" target="_blank" style="color: black">{{__('Developed By ')}}<span style="color:  #f36140;font-weight: 700;"> {{__('BAE')}}</span></a></span>
+                                    <span> <a href="https://github.com/yohana-samile/" target="_blank" style="color: black">{{__('Developed By ')}}<span style="color:  #f36140;font-weight: 700;"> {{__('Developer Samile')}}</span></a></span>
                                 </div>
                             </div>
                         </div>
