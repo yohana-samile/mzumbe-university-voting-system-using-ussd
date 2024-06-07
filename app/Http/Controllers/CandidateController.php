@@ -14,13 +14,7 @@
     class CandidateController extends Controller
     {
         public function index(){
-            $candidates = DB::select("SELECT users.id as user_id, candidates.id, users.name as candidate_name, users.regstration_number, users.phone_number, users.gender, users.email, users.created_at, users.updated_at, positions.name AS position_name, year_of_studies.name AS year, programmes.programme_abbreviation, units.unit_abbreviation FROM
-                users, programmes, units, positions, year_of_studies, candidates WHERE
-                users.programme_id = programmes.id AND
-                programmes.unit_id = units.id AND
-                users.year_of_studie_id = year_of_studies.id AND
-                candidates.name = users.id
-            ");
+            $candidates = DB::select(" SELECT candidates.id, candidates.name as candidate_name, positions.name AS position_name FROM positions, candidates WHERE candidates.position_id = positions.id ");
             return view('candidate/index', compact('candidates'));
         }
 

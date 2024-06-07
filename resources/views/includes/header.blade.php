@@ -26,7 +26,7 @@
         }
     </style>
 </head>
-<body>
+<body id="page-top">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">

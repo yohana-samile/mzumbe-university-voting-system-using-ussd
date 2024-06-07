@@ -14,7 +14,7 @@
             return view('unit/add_unit');
         }
 
-        public function store(Request $request){
+        public function store_unit(Request $request){
             $store = Unit::create($request->all());
             if ($store) {
                 return redirect()->back()->with('success', 'Your unit Added Successfuly');

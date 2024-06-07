@@ -29,6 +29,7 @@
 
     Auth::routes();
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
     // position
     Route::controller(PositionController::class)->group(function () {
         Route::get('position/', 'index');
@@ -44,7 +45,7 @@
     Route::controller(UnitController::class)->group(function () {
         Route::get('unit/', 'index');
         Route::get('unit/add_unit', 'add_unit');
-        Route::post('store', 'store')->name('store');
+        Route::post('store_unit', 'store_unit')->name('store_unit');
         Route::get('unit/view_unit/{id}', 'view_unit')->name('unit/view_unit');
         Route::get('unit/edit_unit/{id}', 'edit_unit')->name('unit/edit_unit');
         Route::post('update_unit', 'update_unit')->name('update_unit');
@@ -55,7 +56,7 @@
     Route::controller(ProgrammeController::class)->group(function () {
         Route::get('programme/', 'index');
         Route::get('programme/add_programme', 'add_programme');
-        Route::post('store', 'store')->name('store');
+        Route::post('store_programme', 'store_programme')->name('store_programme');
         Route::get('programme/view_programme/{id}', 'view_programme')->name('programme/view_programme');
         Route::get('programme/edit_programme/{id}', 'edit_programme')->name('programme/edit_programme');
         Route::post('update_programme', 'update_programme')->name('update_programme');
@@ -110,9 +111,11 @@
         Route::post('destroy_election_manager/{id}', 'destroy_election_manager')->name('destroy_election_manager');
     })->middleware('auth');
 
-    // result for ection
+    // result for erection
     Route::controller(ElectionResultController::class)->group(function () {
         Route::get('result/', 'index');
         Route::get('result/voting_result_for/{id}', 'voting_result_for')->name('result.voting_result_for');
         Route::post('publish_voting_result', 'publish_voting_result')->name('publish_voting_result');
     })->middleware('auth');
+
+    // Route::post('/handleUssd', [App\Http\Controllers\USSDController::class, 'handleUssd'])->name('handleUssd');

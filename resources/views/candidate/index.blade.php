@@ -59,7 +59,8 @@
                                     <td>
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <a href="{{ url('candidate/view_candidate', ['id' => $candidate->user_id ])}}">
+                                                {{-- <a href="{{ url('candidate/view_candidate', ['id' => $candidate->user_id ])}}"> --}}
+                                                <a href="javascript::void(0)">
                                                     <i class="fa fa-eye text-primary"></i>
                                                 </a>
                                             </div>

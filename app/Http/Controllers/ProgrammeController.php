@@ -16,7 +16,7 @@
             return view('programme/add_programme', compact('units'));
         }
 
-        public function store(Request $request){
+        public function store_programme(Request $request){
             $store = Programme::create($request->all());
             if ($store) {
                 return redirect()->back()->with('success', 'Your programme Added Successfuly');

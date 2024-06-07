@@ -1,83 +1,177 @@
 <?php
-    namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
-    use Illuminate\Http\Request;
-    use App\Models\User;
-    use App\Models\Candidate;
-    use App\Models\Vote;
-    use App\Models\VotingWindow;
-    use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Candidate;
+use App\Models\Vote;
+use App\Models\VotingWindow;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use AfricasTalking\SDK\AfricasTalking;
 
-    class USSDController extends Controller
-    {
-        public function handle(Request $request)
-        {
-            $input = $request->input('text');
-            $sessionId = $request->input('sessionId');
-            $phoneNumber = $request->input('phoneNumber');
-            $serviceCode = $request->input('serviceCode');
+class USSDController extends Controller
+{
+    protected $africasTalking;
+    protected $presidentCandidates;
+    protected $senatorCandidates;
+    protected $frCandidates;
 
-            // Initialize USSD session if not existing
-            $sessionData = $this->getSessionData($sessionId);
+    public function __construct() {
+        $this->africasTalking = new AfricasTalking(config('africastalking.username'), config('africastalking.api_key'));
 
-            // Parse input based on USSD session state
-            switch ($sessionData['step']) {
-                case 0:
-                    // Welcome message
-                    $response = "Welcome to MU-OVS. Enter your registration number:";
-                    $sessionData['step'] = 1;
-                    break;
-                case 1:
-                    // Validate registration number
-                    $response = $this->validateRegistrationNumber($input);
-                    if ($response === "Valid") {
-                        $sessionData['step'] = 2;
-                        $sessionData['registration_number'] = $input;
-                        $response .= "\nSelect your preferred candidate for president:\n1. Candidate 1\n2. Candidate 2";
-                    } else {
-                        $response .= "\nEnter your registration number:";
-                    }
-                    break;
-                // Handle other steps of the voting process
-                // ...
-                default:
-                    $response = "Invalid input. Please try again.";
-            }
+        $this->presidentCandidates = DB::table('candidates')
+            ->join('positions', 'candidates.position_id', '=', 'positions.id')
+            ->where('positions.name', 'president')
+            ->where('candidates.result_publication', 'unpublished')
+            ->select('candidates.name as candidate_name', 'candidates.id')
+            ->limit(2)
+            ->get();
 
-            // Save USSD session data
-            $this->saveSessionData($sessionId, $sessionData);
+        $this->senatorCandidates = DB::table('candidates')
+            ->join('positions', 'candidates.position_id', '=', 'positions.id')
+            ->where('positions.name', 'senator')
+            ->where('candidates.result_publication', 'unpublished')
+            ->select('candidates.name as candidate_name', 'candidates.id')
+            ->limit(2)
+            ->get();
 
-            // Return response
-            return response($response);
-        }
-
-        private function validateRegistrationNumber($regNumber)
-        {
-            // Validate registration number against database
-            $user = User::where('regstration_number', $regNumber)->first();
-            if ($user) {
-                return "Valid";
-            } else {
-                return "Invalid registration number. Try again.";
-            }
-        }
-
-        // Other methods to handle different steps of the voting process
-
-        private function getSessionData($sessionId)
-        {
-            // Retrieve session data from database or initialize new session if not existing
-            // For simplicity, you can store session data in a database table or cache
-            // Example: $sessionData = USSDSession::firstOrCreate(['session_id' => $sessionId]);
-            return [
-                'step' => 0,
-                // Other session data
-            ];
-        }
-
-        private function saveSessionData($sessionId, $sessionData)
-        {
-            // Save session data to database or cache
-            // Example: USSDSession::updateOrCreate(['session_id' => $sessionId], $sessionData);
-        }
+        $this->frCandidates = DB::table('candidates')
+            ->join('positions', 'candidates.position_id', '=', 'positions.id')
+            ->where('positions.name', 'fr')
+            ->where('candidates.result_publication', 'unpublished')
+            ->select('candidates.name as candidate_name', 'candidates.id')
+            ->limit(2)
+            ->get();
     }
+
+    public function handleUssd(Request $request) {
+        Log::info('USSD request received', $request->all());
+
+        try {
+            $sessionId   = $request->input('sessionId');
+            $serviceCode = $request->input('serviceCode');
+            $phoneNumber = $request->input('phoneNumber');
+            $text        = $request->input('text');
+
+            $textArray = explode('*', $text);
+            $level = count($textArray);
+
+            if ($level == 1) {
+                // Prompt for registration number
+                $response = "CON Enter Your Reg.no";
+            } elseif ($level == 2) {
+                // Validate registration number
+                $regNo = $textArray[1];
+                $user = User::where('regstration_number', $regNo)->first();
+
+                if ($user) {
+                    // Check if user has already voted
+                    $vote = Vote::join('users', 'votes.user_id', '=', 'users.id')
+                        ->where('users.regstration_number', $regNo)
+                        ->select('votes.*', 'users.id')
+                        ->first();
+
+                    $voting_window = VotingWindow::where('status', 'open')->first();
+
+                    if ($vote) {
+                        $response = "END You have already voted.";
+                    } elseif (!$voting_window) {
+                        $response = "END Voting is currently closed.";
+                    } else {
+                        // Prompt for president selection
+                        $response = "CON Choose President:\n";
+                        foreach ($this->presidentCandidates as $index => $president) {
+                            $response .= ($index + 1) . ". " . $president->candidate_name . "\n";
+                        }
+                    }
+                } else {
+                    $response = "END Invalid registration number.";
+                }
+            } elseif ($level == 3) {
+                // Handle president selection and prompt for senator
+                $regNo = $textArray[1];
+                $president = $textArray[2];
+
+                $response = "CON Choose Senator:\n";
+                foreach ($this->senatorCandidates as $index => $senator) {
+                    $response .= ($index + 1) . ". " . $senator->candidate_name . "\n";
+                }
+            } elseif ($level == 4) {
+                // Handle senator selection and prompt for fr
+                $regNo = $textArray[1];
+                $president = $textArray[2];
+                $senator = $textArray[3];
+
+                $response = "CON Choose FR:\n";
+                foreach ($this->frCandidates as $index => $fr) {
+                    $response .= ($index + 1) . ". " . $fr->candidate_name . "\n";
+                }
+            }
+            elseif ($level == 5) {
+                // Handle fr selection and save the vote
+                $regNo = $textArray[1];
+                $president = $textArray[2];
+                $senator = $textArray[3];
+                $fr = $textArray[4];
+
+                $user = User::where('regstration_number', $regNo)->first();
+                $presidentCandidate = $this->presidentCandidates[$president - 1];
+                $senatorCandidate = $this->senatorCandidates[$senator - 1];
+                $frCandidate = $this->frCandidates[$fr - 1];
+
+                $voting_window = VotingWindow::where('status', 'open')->first();
+
+                try {
+                    DB::beginTransaction();
+
+                    // Insert votes for president, senator, and FR
+                    $president_vote = Vote::create([
+                        'user_id' => $user->id,
+                        'candidate_id' => $presidentCandidate->id,
+                        'voting_window_id' => $voting_window->id,
+                    ]);
+
+                    $senator_vote = Vote::create([
+                        'user_id' => $user->id,
+                        'candidate_id' => $senatorCandidate->id,
+                        'voting_window_id' => $voting_window->id,
+                    ]);
+
+                    $fr_vote = Vote::create([
+                        'user_id' => $user->id,
+                        'candidate_id' => $frCandidate->id,
+                        'voting_window_id' => $voting_window->id,
+                    ]);
+
+                    // Update total votes for each candidate
+                    $this->updateTotalVotes($presidentCandidate->id);
+                    $this->updateTotalVotes($senatorCandidate->id);
+                    $this->updateTotalVotes($frCandidate->id);
+
+
+                    DB::commit();
+                    $response = "END Thank you for voting.";
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                    $response = "END Something went wrong. Please try again later.";
+                }
+            }
+
+            Log::info('USSD response', ['response' => $response]);
+
+        }
+        catch (\Exception $e) {
+            Log::error('USSD error', ['error' => $e->getMessage()]);
+            $response = "END Something went wrong. Please try again later.";
+        }
+
+        return response($response)->header('Content-Type', 'text/plain');
+    }
+
+    private function updateTotalVotes($candidate_id) {
+        $total_votes = Vote::where('candidate_id', $candidate_id)->count();
+        Candidate::where('id', $candidate_id)->update(['total_votes' => $total_votes]);
+    }
+}

@@ -29,7 +29,7 @@
                         <select name="name" id="name" class="form-control" required>
                             <option selected hidden disabled>Enter canidate Name</option>
                             @foreach ($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                <option value="{{ $user->name }}">{{ $user->name }}</option>
                             @endforeach
                         </select>
                         <label for="name">Enter canidate Name</label>
